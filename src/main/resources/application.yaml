@@ -1,0 +1,27 @@
+spring:
+  application:
+    name: flowable-demo
+
+  # MySQL 数据源
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    # 直接访问数据库
+    hikari:
+      max-pool-size: 20
+      connection-test-query: select 1
+      connection-timeout: 6000
+      idle-timeout: 10000
+      max-lifetime: 600000
+      min-idle: 5
+      jdbc-url: 'jdbc:mysql://localhost:3306/flowable?useUnicode=true&characterEncoding=utf8&autoReconnect=true&allowMultiQueries=true&serverTimezone=Asia/Shanghai&useAffectedRows=true&zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=${db.useSSL:false}'
+      username: root
+      password: 123456
+
+# Flowable 配置
+flowable:
+  # 自动更新表结构（第一次自动建表）
+  database-schema-update: true
+  # 开启异步执行器
+  async-executor-activate: true
+  # 关闭默认界面（纯后端）
+  process-definition-read-only: false

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:flowable="http://flowable.org/bpmn"
+             targetNamespace="http://flowable.org/bpmn">
+
+    <!-- 流程ID：leave-process -->
+    <process id="leave-process" name="请假流程" isExecutable="true">
+        <startEvent id="start"/>
+        <sequenceFlow sourceRef="start" targetRef="apply"/>
+
+        <!-- 申请人提交 -->
+        <userTask id="apply" name="提交请假申请" flowable:assignee="${applyUser}"/>
+        <sequenceFlow sourceRef="apply" targetRef="audit"/>
+
+        <!-- 领导审批 -->
+        <userTask id="audit" name="领导审批" flowable:assignee="leader"/>
+        <sequenceFlow sourceRef="audit" targetRef="end"/>
+
+        <endEvent id="end"/>
+    </process>
+</definitions>
