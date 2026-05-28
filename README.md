@@ -42,3 +42,4 @@ http://localhost:8080/flow/history/activity?procId=xxx
 资料 | 说明
 --- | ---
 官方GitHub | https://github.com/flowable/flowable-engine
+BPMN 全称 | Business Process Model and Notation（业务流程模型与符号）
