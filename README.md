@@ -43,3 +43,5 @@ http://localhost:8080/flow/history/activity?procId=xxx
 --- | ---
 官方GitHub | https://github.com/flowable/flowable-engine
 BPMN 全称 | Business Process Model and Notation（业务流程模型与符号）
+CMMN 全称 | Case Management Model and Notation（案例管理模型与符号）
+DMN 全称 | Decision Model and Notation（决策模型与符号）
