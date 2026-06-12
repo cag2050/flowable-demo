@@ -45,3 +45,5 @@ http://localhost:8080/flow/history/activity?procId=xxx
 BPMN 全称 | Business Process Model and Notation（业务流程模型与符号）
 CMMN 全称 | Case Management Model and Notation（案例管理模型与符号）
 DMN 全称 | Decision Model and Notation（决策模型与符号）
+边界事件默认都是捕获型的，且分为两种触发后的处理策略：中断型 (Interrupting)、非中断型 (Non-interrupting)。 | 
+所有开始事件，都是捕获事件 | 
