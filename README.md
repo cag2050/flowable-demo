@@ -47,3 +47,6 @@ CMMN 全称 | Case Management Model and Notation（案例管理模型与符号�
 DMN 全称 | Decision Model and Notation（决策模型与符号）
 边界事件默认都是捕获型的，且分为两种触发后的处理策略：中断型 (Interrupting)、非中断型 (Non-interrupting)。 | 
 所有开始事件，都是捕获事件 | 
+pom.xml引入flowable-spring-boot-starter-rest依赖后，不带Swagger UI,调用引擎管理接口验证连通性（用户名和密码，在src/main/resources/application.yaml中配置） | curl -u admin:test http://localhost:8080/process-api/management/engine
+Flowable REST Starter 将不同引擎的 API 隔离在独立的前缀下，不能省略前缀直接访问；BPMN流程的默认前缀：/process-api/ |
+查看Flowable REST的Swagger（flowable-rest.war带Swagger UI）：docker run -p 8080:8080 flowable/flowable-rest:6.8.0 ，然后访问：http://localhost:8080/flowable-rest/docs ，认证用户名/密码：rest-admin/test | 

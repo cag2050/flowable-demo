@@ -25,3 +25,13 @@ flowable:
   async-executor-activate: true
   # 关闭默认界面（纯后端）
   process-definition-read-only: false
+
+  rest:
+    # 自定义 API 前缀（默认为空，即使用上述默认路径）
+    app-root: ""
+    # 认证相关（REST Starter 默认使用 Basic Auth）
+    security:
+      enabled: false
+      # 默认用户（仅开发调试用，生产环境必须替换为自定义 Security 配置）
+      user: admin
+      password: test
