@@ -39,6 +39,27 @@ http://localhost:8080/flow/history/my-done?assignee=zhangsan
 http://localhost:8080/flow/history/activity?procId=xxx
 ```
 
+### 构建my-flowable-rest镜像（之前使用的postgresql驱动，换成使用mysql驱动）：
+> 背景：flowable-rest.war带Swagger UI，pom.xml引入flowable-spring-boot-starter-rest依赖不带Swagger UI；
+> 想在引入flowable-spring-boot-starter-rest依赖的项目里，查看Swagger UI，开发阶段用 Docker 跑一个 flowable-rest 容器专门用来查文档和调试接口，生产环境仍然使用 Starter 嵌入部署。两者共享同一个数据库即可。
+> 特别注意：需要Flowable版本号对应。
+1. libs文件夹下，从 https://mvnrepository.com/artifact/com.mysql/mysql-connector-j 下载文件：mysql-connector-j-8.0.33.jar
+2. 新建文件：Dockerfile
+3. 构建镜像：docker build -t my-flowable-rest:6.8.0 .
+4. 新建数据库：flowable-680
+5. 运行镜像：
+```
+docker run  \
+    -p 8081:8080 \
+    -e SPRING_DATASOURCE_DRIVER_CLASS_NAME=com.mysql.cj.jdbc.Driver \
+    -e SPRING_DATASOURCE_URL="jdbc:mysql://host.docker.internal:3306/flowable-680?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true" \
+    -e SPRING_DATASOURCE_USERNAME=root \
+    -e SPRING_DATASOURCE_PASSWORD=123456 \
+    -e FLOWABLE_DATABASE_SCHEMA_UPDATE=false \
+    my-flowable-rest:6.8.0
+```
+5. 不成功，有报错；暂时先用官方镜像：flowable/flowable-rest:6.8.0
+
 资料 | 说明
 --- | ---
 官方GitHub | https://github.com/flowable/flowable-engine
@@ -49,4 +70,4 @@ DMN 全称 | Decision Model and Notation（决策模型与符号）
 所有开始事件，都是捕获事件 | 
 pom.xml引入flowable-spring-boot-starter-rest依赖后，不带Swagger UI,调用引擎管理接口验证连通性（用户名和密码，在src/main/resources/application.yaml中配置） | curl -u admin:test http://localhost:8080/process-api/management/engine
 Flowable REST Starter 将不同引擎的 API 隔离在独立的前缀下，不能省略前缀直接访问；BPMN流程的默认前缀：/process-api/ |
-查看Flowable REST的Swagger（flowable-rest.war带Swagger UI）：docker run -p 8080:8080 flowable/flowable-rest:6.8.0 ，然后访问：http://localhost:8080/flowable-rest/docs ，认证用户名/密码：rest-admin/test | 
+查看Flowable REST的Swagger（flowable-rest.war带Swagger UI）：docker run -p 8080:8080 flowable/flowable-rest:6.8.0 ，然后访问：http://localhost:8080/flowable-rest/docs ，认证用户名/密码：rest-admin/test |
