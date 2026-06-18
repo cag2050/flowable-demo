@@ -55,7 +55,7 @@ docker run  \
     -e SPRING_DATASOURCE_URL="jdbc:mysql://host.docker.internal:3306/flowable-680?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true" \
     -e SPRING_DATASOURCE_USERNAME=root \
     -e SPRING_DATASOURCE_PASSWORD=123456 \
-    -e FLOWABLE_DATABASE_SCHEMA_UPDATE=false \
+    -e FLOWABLE_DB_SCHEMA_UPDATE=true \
     my-flowable-rest:6.8.0
 ```
 5. 不成功，有报错；暂时先用官方镜像：flowable/flowable-rest:6.8.0
