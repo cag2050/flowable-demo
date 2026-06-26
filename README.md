@@ -60,6 +60,17 @@ docker run  \
 ```
 5. 不成功，有报错；暂时先用官方镜像：flowable/flowable-rest:6.8.0
 
+### flowable-rest 路径对应
+> 1. 启动flowable-rest docker，使用端口：8081，仅用于查看接口路径和参数：docker run -p 8081:8080 flowable/flowable-rest:6.8.0
+> 2. 启动本项目，使用端口：8080
+> 3. docker路径中的：/flowable-rest/service/，对应本项目路径：/process-api/（BPMN流程的默认前缀）
+
+docker接口路径 | 对应本项目接口路径
+--- | ---
+http://localhost:8081/flowable-rest/service/management/engine | http://localhost:8080/process-api/management/engine
+http://localhost:8081/flowable-rest/service/history/historic-process-instances | http://localhost:8080/process-api/history/historic-process-instances
+http://localhost:8081/flowable-rest/service/history/historic-task-instances | http://localhost:8080/process-api/history/historic-task-instances
+
 资料 | 说明
 --- | ---
 官方GitHub | https://github.com/flowable/flowable-engine
