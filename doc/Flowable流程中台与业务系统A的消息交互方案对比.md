@@ -200,6 +200,45 @@ Event Registry Start（A 发消息直接发起流程）：
 
 Receive Event Task（流程停下等 A 回执）：用 `<receiveEventServiceTask>` 配 `eventType=taskReply`，再用 `<flowable:eventCorrelationParameter name="bizId" value="${bizId}"/>` 把回执路由回当前实例。
 
+**Intermediate Event Registry Throw Event（中间事件 · 抛出 / 发送，发完即走）**：
+
+和 `Send Event Task` 等价、但在流程图里画成**圆圈**而非任务框——适合放在两个节点之间表达「路过这里顺手发个事件通知 A」。同样用 `flowable:eventInParameter`（流程变量→事件 payload）+ `flowable:channelKey`（出站通道）：
+
+```xml
+<intermediateThrowEvent id="notifyAThrow" name="通知A待办">
+  <extensionElements>
+    <flowable:eventType>taskCreated</flowable:eventType>
+    <flowable:eventInParameter source="${bizId}"   sourceType="string" target="bizId"/>
+    <flowable:eventInParameter source="${taskName}" sourceType="string" target="taskName"/>
+    <flowable:eventInParameter source="${assignee}" sourceType="string" target="assignee"/>
+    <flowable:channelKey>notifyOut</flowable:channelKey>
+  </extensionElements>
+</intermediateThrowEvent>
+```
+
+> 注意：Event Registry 的「抛出」不写 BPMN 标准的 `<xxxEventDefinition>` 子元素，发送语义完全由 `flowable:eventType`/`eventInParameter`/`channelKey` 这组扩展元素承载。`eventInParameter` 是 `eventOutParameter` 的反向：In 是「变量装进消息」，Out 是「消息拆进变量」。
+
+**Intermediate Event Registry Catch Event（中间事件 · 捕获 / 接收，停在此处等 A）**：
+
+和 `Receive Event Task` 等价、画成**圆圈**——流程**停在此处变成 wait state**，直到匹配的事件到达才继续。用 `flowable:eventCorrelationParameter` 把消息路由回**当前正确的实例**，用 `flowable:eventOutParameter` 把回执 payload 拆进流程变量：
+
+```xml
+<intermediateCatchEvent id="waitReplyCatch" name="等A回执">
+  <extensionElements>
+    <flowable:eventType>taskReply</flowable:eventType>
+    <flowable:eventCorrelationParameter name="bizId" value="${bizId}"/>
+    <flowable:eventOutParameter source="result"  sourceType="string" target="result"/>
+    <flowable:eventOutParameter source="comment" sourceType="string" target="comment"/>
+    <flowable:channelKey>replyIn</flowable:channelKey>
+  </extensionElements>
+</intermediateCatchEvent>
+```
+
+> 关键点：
+> - **correlation（关联键）** `bizId` 决定回执唤醒哪一个实例，配错就唤不醒——这是踩坑高发区。
+> - `channelKey` 在 catch 端**可省略**：省略则订阅该 `eventType`，任何喂这个事件的通道都能触发；写上则把订阅**收窄到指定通道**。
+> - Throw / Catch（中间圆圈）与前面的 Send / Receive Task（任务框）**功能等价**，区别只是**画法与建模语义**：放在节点之间、强调「顺路收发」时用中间事件；作为一个独立工作步骤时用 Task。开源版 6.8.1 两种画法都支持。
+
 **5. 部署与触发**
 
 - `.event` / `.channel` / `.bpmn20.xml` 放进 `src/main/resources/`，Spring Boot starter **启动时自动部署**（与现有 `processes/leave.bpmn20.xml` 同机制）。
